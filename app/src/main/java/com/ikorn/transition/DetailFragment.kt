@@ -2,6 +2,7 @@ package com.ikorn.transition
 
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -10,6 +11,7 @@ import android.view.animation.AccelerateInterpolator
 import android.view.animation.DecelerateInterpolator
 import android.view.animation.Interpolator
 import android.view.animation.OvershootInterpolator
+import androidx.core.view.ViewCompat
 import androidx.databinding.DataBindingUtil
 import androidx.transition.ChangeBounds
 import androidx.transition.ChangeTransform
@@ -26,13 +28,17 @@ class DetailFragment : Fragment() {
         postponeEnterTransition()
         sharedElementEnterTransition = getTransition()
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_detail, container, false)
+        val item = arguments?.getSerializable("item") as? CardItem
+        if (item != null) {
+            binding.item = item
+            ViewCompat.setTransitionName(binding.card, item.cardName)
+            ViewCompat.setTransitionName(binding.title, item.title)
+        }
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val title = arguments?.getString("title")
-        binding.title.text = title
         startPostponedEnterTransition()
     }
 

@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
+import androidx.core.view.ViewCompat
 import androidx.databinding.DataBindingUtil
 import androidx.navigation.fragment.FragmentNavigator
 import androidx.navigation.fragment.findNavController
@@ -15,6 +16,7 @@ import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.ikorn.transition.databinding.FragmentHomeBinding
 import com.ikorn.transition.databinding.ItemCardBinding
+import java.io.Serializable
 
 class HomeFragment : Fragment() {
 
@@ -40,22 +42,26 @@ class HomeFragment : Fragment() {
                 startPostponedEnterTransition()
             }
         }
-        recyclerAdapter.data = data
+        recyclerAdapter.data = data.mapIndexed { index, title -> CardItem(index, title) }
     }
 
-    private fun onClick(title: String, map: Map<String, View>) =
+    private fun onClick(item: CardItem, map: Map<String, View>) =
             findNavController().navigate(R.id.action_homeFragment_to_detailFragment,
-                    bundleOf("title" to title), null,
+                    bundleOf("item" to item), null,
                     FragmentNavigator.Extras.Builder()
                             .addSharedElements(map.entries.associate { it.value to it.key })
                             .build())
-                    .also { Log.d("---->", "click $title") }
 
 }
 
-class HomeContentAdapter(val onClick: (String, Map<String, View>) -> Unit) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+data class CardItem(private val position: Int, val title: String) : Serializable {
+    val cardName: String get() = "card_$position"
+    val titleName: String get() = "title_$position"
+}
 
-    var data: List<String>? = null
+class HomeContentAdapter(val onClick: (CardItem, Map<String, View>) -> Unit) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+
+    var data: List<CardItem>? = null
         set(value) {
             field = value
             notifyDataSetChanged()
@@ -64,12 +70,13 @@ class HomeContentAdapter(val onClick: (String, Map<String, View>) -> Unit) : Rec
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder = ContentVH(parent)
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        with((holder as ContentVH).binding) {
-            val text = data?.get(position) ?: ""
-            Log.d("--->", "data: $text")
-            title.text = text
-            card.setOnClickListener {
-                onClick(text, mapOf<String, View>("card" to card, "title" to title))
+        with((holder as ContentVH)) {
+            val item = data?.get(position) ?: return
+            binding.item = item
+            ViewCompat.setTransitionName(binding.card, item.cardName)
+            ViewCompat.setTransitionName(binding.title, item.titleName)
+            binding.card.setOnClickListener {
+                onClick(item, mapOf(item.cardName to binding.card, item.titleName to binding.title))
             }
         }
     }

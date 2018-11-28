@@ -1,14 +1,20 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <data>
+
+        <variable
+            name="item"
+            type="com.ikorn.transition.CardItem" />
+    </data>
+
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/card"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_margin="8dp"
-        android:transitionName="card"
-        android:focusable="true"
         android:clickable="true"
+        android:focusable="true"
         app:cardBackgroundColor="@android:color/white"
         app:cardCornerRadius="6dp"
         app:cardElevation="6dp">
@@ -23,9 +29,8 @@
                 style="@style/TextAppearance.MaterialComponents.Headline4"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="test title"
+                android:text="@{item.title}"
                 android:textColor="@android:color/black"
-                android:transitionName="title"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
