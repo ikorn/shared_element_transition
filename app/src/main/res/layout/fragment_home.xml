@@ -13,13 +13,12 @@
             android:layout_height="200dp"
             android:clipToPadding="false"
             android:orientation="horizontal"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp"
-            app:layout_constraintBottom_toBottomOf="parent"
             tools:listitem="@layout/item_card" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
